@@ -1,0 +1,6 @@
+deployment:
+  imageURL: anjuma/catalogue
+  imageversion: IMAGE_VERSION
+hpa:
+  maxReplicas: 10
+  Utilisation: 75
