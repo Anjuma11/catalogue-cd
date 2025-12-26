@@ -39,31 +39,41 @@ pipeline {
             }
         }
     }
-    stage("Check Status"){
-        steps{
-            script{
-                def deploymentStatus=sh(returnStdout: true, script: "kubectl rollout status deployment/catalogue --request-timeout=30s -n $project || echo FAILED").trim()
-                if deploymentStatus.contains("Successfully rolledout"){
-                    echo "deployment is success"
-                }
-                else{
-                    sh """
-                        helm rollback $component -n $project
-                        sleep 20
-                    """
-                    def rollbackStatus=sh(returnStdout: true, script: "kubectl rollout status deployment/catalogue  --request-timeout=30s -n $project || echo FAILED").trim()
-                    if rollbackStatus.contains("successfully rolledout"){
-                        error "deployment is failure, rollback is success"
-                    }
-                    else{
-                        error "Deployment is failure rollback is failure, application is not running"                       
+    // stage("Check Status"){
+    //     steps{
+    //         script{
+    //             def deploymentStatus=sh(returnStdout: true, script: "kubectl rollout status deployment/catalogue --request-timeout=30s -n $project || echo FAILED").trim()
+    //             if deploymentStatus.contains("Successfully rolledout"){
+    //                 echo "deployment is success"
+    //             }
+    //             else{
+    //                 sh """
+    //                     helm rollback $component -n $project
+    //                     sleep 20
+    //                 """
+    //                 def rollbackStatus=sh(returnStdout: true, script: "kubectl rollout status deployment/catalogue  --request-timeout=30s -n $project || echo FAILED").trim()
+    //                 if rollbackStatus.contains("successfully rolledout"){
+    //                     error "deployment is failure, rollback is success"
+    //                 }
+    //                 else{
+    //                     error "Deployment is failure rollback is failure, application is not running"                       
     
-                    }
-                }
+    //                 }
+    //             }
 
-            }
-        }
-    }
+    //         }
+    //     }
+    // }
+    // stage('Trigger Functional Testing'){
+    //     when{
+    //         expression {params.deploy_to= "qa"}
+    //     }
+    //     steps{
+    //         script{
+
+    //         }
+    //     }
+    // }
     post{
         always{
             echo "I will always say hello again"
